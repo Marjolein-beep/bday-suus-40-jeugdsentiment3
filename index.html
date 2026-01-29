@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QR Quiz</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      text-align: center;
+      margin: 50px 16px;
+      background: powderblue;
+    }
+    #wrap {
+      display: inline-block;
+      background: #fff;
+      padding: 20px;
+      border-radius: 14px;
+    }
+    #qr {
+      width: 280px;
+      height: 280px;
+      object-fit: contain;
+      background: #fff;
+    }
+    .btns {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    button {
+      font-size: 18px;
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+    #answerBox {
+      margin-top: 16px;
+      font-size: 22px;
+      background: #000;
+      color: #fff;
+      padding: 14px 18px;
+      border-radius: 10px;
+      min-height: 1.2em;
+    }
+    #meta {
+      margin-top: 12px;
+      opacity: 0.8;
+      font-size: 14px;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="wrap">
+    <img id="qr" alt="QR code" src="" />
+    <div id="answerBox">Klik “Toon antwoord”</div>
+
+    <div class="btns">
+      <button id="reveal">Toon antwoord</button>
+      <button id="next">Volgende</button>
+    </div>
+
+    <div id="meta"></div>
+  </div>
+
+<script>
+  // 🔧 Debug-modus (true = meldingen zichtbaar, false = stil)
+  const DEBUG = false;
+
+  /**
+   * ✅ LAATSTE WERKENDE VERSIE (GitHub Pages)
+   * Repo naam: bday-suus-40-jeugdsentiment3
+   *
+   * Upload-structuur in repo-root:
+   * - index.html
+   * - qrs/   (qr1.png  t/m qr100.png)
+   * - qrs1/  (qr101.png t/m qr200.png)
+   * - qrs2/  (qr201.png t/m qr250.png)
+   *
+   * GitHub Pages: Settings → Pages → Deploy from branch → main → /(root)
+   */
+
+  // ⬇️ Pas alleen je GitHub gebruikersnaam aan als die ooit verandert
+  const USERNAME = "marjolein-beep";
+  const REPO = "bday-suus-40-jeugdsentiment3";
+  const BASE = `https://${USERNAME}.github.io/${REPO}`;
+
+  // 1) QR-items: QR-bestand + correct antwoord
+  const items = [
+
+    // 🔹 qrs (200–263)
+  { qr: `${BASE}/qrs2/qr200.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr201.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr202.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr203.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr204.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr205.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr206.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr207.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr208.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr209.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr210.png`, answer: "..." },
+
+  { qr: `${BASE}/qrs2/qr211.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr212.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr213.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr214.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr215.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr216.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr217.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr218.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr219.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr220.png`, answer: "..." },
+
+  { qr: `${BASE}/qrs2/qr221.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr222.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr223.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr224.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr225.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr226.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr227.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr228.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr229.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr230.png`, answer: "..." },
+
+  { qr: `${BASE}/qrs2/qr231.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr232.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr233.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr234.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr235.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr236.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr237.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr238.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr239.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr240.png`, answer: "..." },
+
+  { qr: `${BASE}/qrs2/qr241.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr242.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr243.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr244.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr245.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr246.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr247.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr248.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr249.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr250.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr251.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr252.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr253.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr254.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr255.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr256.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr257.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr258.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr259.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr260.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr261.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr262.png`, answer: "..." },
+  { qr: `${BASE}/qrs2/qr263.png`, answer: "..." }
+    // ... t/m qr263.png (blijft /qrs2)
+  ];
+
+    // 2) Shuffle per ronde zodat je niet herhaalt tot alles geweest is
+    let ronde = [];
+    let index = 0;
+    let current = null;
+    let revealed = false;
+
+    function shuffle(a) {
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function nieuweRonde() {
+      ronde = shuffle([...items]);
+      index = 0;
+    }
+
+    function render() {
+      const img = document.getElementById("qr");
+      const meta = document.getElementById("meta");
+      const box  = document.getElementById("answerBox");
+
+      if (!current) {
+        meta.textContent = "❌ current is null (er is nog geen item geselecteerd).";
+        return;
+      }
+
+      // Debug: toont exact wat er geladen wordt (handig tot alles stabiel is)
+      meta.textContent = "Probeer te laden: " + current.qr;
+
+      img.onload = () => {
+        meta.textContent = "✅ Geladen: " + img.src;
+      };
+
+      img.onerror = () => {
+        meta.textContent = "❌ Kon niet laden: " + img.src;
+      };
+
+      img.src = current.qr;
+
+      box.textContent = revealed ? current.answer : "Klik “Toon antwoord”";
+    }
+
+    function volgende() {
+      if (!items.length) {
+        document.getElementById("meta").textContent = "❌ items is leeg. Voeg QR-items toe.";
+        return;
+      }
+      if (ronde.length === 0 || index >= ronde.length) {
+        nieuweRonde();
+      }
+
+      current = ronde[index];
+      index++;
+
+      revealed = false;
+      render();
+    }
+
+    document.getElementById("reveal").addEventListener("click", () => {
+      revealed = true;
+      render();
+    });
+
+    document.getElementById("next").addEventListener("click", volgende);
+
+    // Start
+    nieuweRonde();
+    volgende();
+  </script>
+</body>
+</html>
